@@ -134,7 +134,7 @@ def match_market(name):
     EXACT_NAMES = {
         "DESAWAR": ["DESAWAR", "DISAWER"],
         "FARIDABAD": ["FARIDABAD"],
-        "GHAZIABAD": ["GHAZIABAD, GAZIABAAD, GAZIYABAD"],
+        "GHAZIABAD": ["GHAZIABAD", "GAZIABAAD", "GAZIYABAD"],
         "GALI": ["GALI"]
     }
 
@@ -203,4 +203,5 @@ def send_update(market, new_data, old_data):
 # =======================================================
 threading.Thread(target=monitor).start()
 print("Bot started and monitoring...")
+
 
