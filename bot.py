@@ -91,18 +91,43 @@ def parse_no_sites(html):
     soup = BeautifulSoup(html, "html.parser")
     results = {}
 
-    for tr in soup.select("table.resultboard tr"):
-        tds = tr.find_all("td")
-        if len(tds) < 3:
+    table = soup.find("table", class_="resultboard")
+    if not table:
+        return results
+
+    rows = table.find_all("tr")
+
+    for row in rows:
+        cols = row.find_all("td")
+        if len(cols) < 3:
             continue
 
-        name = tds[0].text.split("<")[0].strip().upper()
-        today = tds[2].text.strip().replace(" ", "")
+        # Clean raw text
+        name_raw = cols[0].get_text(" ", strip=True).upper()
 
-        if today:
-            results[name] = today
+        # Extract only the name (remove time, View Chart, etc)
+        name_clean = name_raw.split("(")[0].strip().split()[0]
+
+        # Normalize names
+        if "DISAWER" in name_clean or "DESAWAR" in name_clean:
+            market = "DESAWAR"
+        elif "FARIDABAD" in name_clean:
+            market = "FARIDABAD"
+        elif "GAZIYABAD" in name_clean or "GHAZIABAD" in name_clean:
+            market = "GHAZIABAD"
+        elif "GALI" in name_clean:
+            market = "GALI"
+        else:
+            continue
+
+        # Today result (3rd column)
+        today = cols[2].get_text(strip=True).replace(" ", "").upper()
+
+        if today and today != "XX":
+            results[market] = today
 
     return results
+
 
 
 # =======================================================
@@ -203,6 +228,7 @@ def send_update(market, new_data, old_data):
 # =======================================================
 threading.Thread(target=monitor).start()
 print("Bot started and monitoring...")
+
 
 
 
