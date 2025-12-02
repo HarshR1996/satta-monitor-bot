@@ -25,7 +25,7 @@ SITES = {
 TARGET_MARKETS = {
     "DESAWAR": ["DESAWAR", "DISAWER", "DS", "DSAWAR"],
     "FARIDABAD": ["FARIDABAD", "FB"],
-    "GHAZIABAD": ["GHAZIABAD", "GAZIYABAD", "GB"],
+    "GHAZIABAD": ["GHAZIABAD", "GAZIYABAD", "GB", "GAZIYABAAD"],
     "GALI": ["GALI", "GL"]
 }
 
@@ -134,7 +134,7 @@ def match_market(name):
     EXACT_NAMES = {
         "DESAWAR": ["DESAWAR", "DISAWER"],
         "FARIDABAD": ["FARIDABAD"],
-        "GHAZIABAD": ["GHAZIABAD", "GAZIABAAD", "GAZIYABAD"],
+        "GHAZIABAD": ["GHAZIABAD", "GAZIYABAAD", "GAZIYABAD"],
         "GALI": ["GALI"]
     }
 
@@ -203,5 +203,6 @@ def send_update(market, new_data, old_data):
 # =======================================================
 threading.Thread(target=monitor).start()
 print("Bot started and monitoring...")
+
 
 
