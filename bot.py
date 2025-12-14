@@ -264,20 +264,42 @@ def send_update(market, new_data):
 # ======================================================
 def monitor():
     global last_data
+
     while True:
         combined = {m: {} for m in TARGET_MARKETS}
+
+        # Fetch from all sites
         for sitename, url in SITES.items():
             data = fetch_site(sitename, url)
+
             for name, value in data.items():
-                if name in TARGET_MARKETS:
+                if name in TARGET_MARKETS and is_valid_result(value):
                     combined[name][sitename] = value
 
+        # Check each market independently
         for market in TARGET_MARKETS:
+
             new_values = combined[market]
             old_values = last_data[market]
-            if new_values != old_values and len(new_values) > 0:
-                send_update(market, new_values)
-                last_data[market] = new_values
+
+            # If NO numeric result exists → ignore
+            if len(new_values) == 0:
+                continue
+
+            # Extract only the numeric values from both
+            new_numbers = sorted(new_values.values())
+            old_numbers = sorted(old_values.values())
+
+            # If numbers SAME → do not send update
+            if new_numbers == old_numbers:
+                continue
+
+            # Otherwise → SEND UPDATE
+            send_update(market, new_values)
+
+            # Save latest values
+            last_data[market] = new_values
+
         time.sleep(10)
 
 
@@ -286,3 +308,4 @@ def monitor():
 # ======================================================
 threading.Thread(target=monitor).start()
 print("Bot started and monitoring...")
+
